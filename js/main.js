@@ -1,18 +1,22 @@
 var peta;
+var mapsLat;
+var mapsLng;
 
 function maps() {
-	var pilihan=
+	var options=
 	{
 		zoom:14,
 		center:new google.maps.LatLng(-0.884621, 119.897442)
 	};
-	peta=new google.maps.Map(document.getElementById("kotak3"), pilihan);
+	peta=new google.maps.Map(document.getElementById("kotak3"), options);
 
 	$.ajax({
 		url: "http://localhost/maps-gps-tracker/getMarker.php",
 		method: "post",
 		dataType: "json",
 		success: function (data) {
+			mapsLat = data.latitude;
+			mapsLng = data.longitude;
 		  for (var i = 0; i < data.length; i++) {
 			displayLocation(data[i]);
 		  }
@@ -23,7 +27,7 @@ function maps() {
 function displayLocation(location) {
 	var geocoder = new google.maps.Geocoder();
 	var infowindow = new google.maps.InfoWindow();
-	var content = '<div class="infoWindow"><strong>' + location.nama + "</strong>" + "<br/>" + location.latitude + "<br/>" + location.longitude + "</div>";
+	var content = '<div class="infoWindow">Warna : <strong>' + location.warna + "</strong>" + "<br/>" + "Latitude : " + "<strong>" + location.latitude + "</strong>" +"<br/>"+ "Longitude : " + "<strong>" + location.longitude + "</strong>" + "<br>" +"Jumlah Satelite : " + "<strong>" + location.jumlah_satelite + "</strong>" +"</div>";
   
 	if (parseInt(location.lat) == 0) {
 	  geocoder.geocode({ address: location.address }, function (results, status) {
@@ -63,6 +67,7 @@ function calibrate(){
 		url: "http://localhost/maps-gps-tracker/calibrate.php",
 		success: function(response) {
 			console.log('Calibrating ..');
+			alert('Sensor Calibrated');
 		},
 		error : function(req, err){
 			console.log('Error'+err);

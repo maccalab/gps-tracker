@@ -89,3 +89,27 @@ table.data{
 table.data td{
 	padding: 10px;
 }
+
+.row {
+    display : flex;
+    align-items : center;
+    margin-bottom: 15px;
+}
+.box {
+  height: 20px;
+  width: 20px;
+  border: 1px solid black;
+  margin-right : 5px;
+}
+
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
+.blue {
+  background-color: blue;
+}

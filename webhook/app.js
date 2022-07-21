@@ -1,4 +1,5 @@
 const https = require('https');
+const http = require('http');
 
 var admin = require("firebase-admin");
 
@@ -14,23 +15,25 @@ admin.initializeApp({
 
 var db = admin.database();
 var ref = db.ref("GPS");
+var colour = db.ref('Colour');
 ref.on("value", function(snapshot) {
-//   if(snapshot.val().isUpdate == 1){
-//     console.log("update",);
-//     console.log(snapshot.val());
-//   } else {
-//     console.log("waiting...",);
-//   }
   console.log(snapshot.val());
-//   sendWebhook(snapshot.val().Suhu, snapshot.val().Waktu);
+  sendGPS(snapshot.val().Num_Satelite, snapshot.val().Latitude, snapshot.val().Longitude);
 }, (errorObject) => {
     console.log("The read failed: " + errorObject.name);
     });
 
-function sendWebhook(suhu, waktu){
-  console.log("sending webhook");
-  const message = 'Suhu : '+ suhu + ' '+ 'Waktu : '+ waktu
-  https.get('https://mrdyman.com/project/macca/monitoring-suhu/main/monitoring-suhu/webhook.php?suhu='+suhu+'&waktu='+waktu, (resp) => {
+colour.on("value", function(snapshot) {
+        console.log(snapshot.val());
+        sendColor(snapshot.val().result);
+    }, (errorObject) => {
+        console.log("The read failed: " + errorObject.name);
+        });
+
+
+function sendGPS(satelite, latitude, longitude){
+  console.log("sending gps");
+  http.get('http://localhost/maps-gps-tracker/updateData.php?satelite='+satelite+'&latitude='+latitude+'&longitude='+longitude, (resp) => {
   let data = '';
 
   // A chunk of data has been received.
@@ -44,7 +47,28 @@ function sendWebhook(suhu, waktu){
     console.log(data);
   });
 
-}).on("error", (err) => {
+  }).on("error", (err) => {
+  console.log("Error: " + err.message);
+});
+}
+
+function sendColor(warna){
+  console.log("sending color");
+  http.get('http://localhost/maps-gps-tracker/updateData.php?warna='+warna, (resp) => {
+  let data = '';
+
+  // A chunk of data has been received.
+  resp.on('data', (chunk) => {
+    data += chunk;
+  });
+
+  // The whole response has been received. Print out the result.
+  resp.on('end', () => {
+    // console.log(JSON.parse(data).result);
+    console.log(data);
+  });
+
+  }).on("error", (err) => {
   console.log("Error: " + err.message);
 });
 }
