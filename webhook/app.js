@@ -16,19 +16,33 @@ admin.initializeApp({
 var db = admin.database();
 var ref = db.ref("GPS");
 var colour = db.ref('Colour');
+var knowledge = db.ref('Colour/Calibrate');
 ref.on("value", function(snapshot) {
-  console.log(snapshot.val());
+  // console.log(snapshot.val());
   sendGPS(snapshot.val().Num_Satelite, snapshot.val().Latitude, snapshot.val().Longitude);
 }, (errorObject) => {
     console.log("The read failed: " + errorObject.name);
     });
 
 colour.on("value", function(snapshot) {
-        console.log(snapshot.val());
-        sendColor(snapshot.val().result);
+        // console.log(snapshot.val());
+        sendColor(snapshot.val().read);
     }, (errorObject) => {
         console.log("The read failed: " + errorObject.name);
         });
+
+knowledge.on("value", function(snapshot){
+  var data = snapshot.val();
+  var red = data.RED;
+  var green = data.GREEN;
+  var blue = data.BLUE;
+  var yellow = data.YELLOW;
+  var black = data.BLACK;
+  var white = data.WHITE;
+  sendKnowledge(red, green, blue, yellow, black, white);
+}, (errorObject) => {
+  console.log("The read failed : "+ errorObject.name);
+});
 
 
 function sendGPS(satelite, latitude, longitude){
@@ -52,9 +66,30 @@ function sendGPS(satelite, latitude, longitude){
 });
 }
 
-function sendColor(warna){
+function sendColor(read){
   console.log("sending color");
-  http.get('http://localhost/maps-gps-tracker/updateData.php?warna='+warna, (resp) => {
+  http.get('http://localhost/maps-gps-tracker/updateData.php?read='+read, (resp) => {
+  let data = '';
+
+  // A chunk of data has been received.
+  resp.on('data', (chunk) => {
+    data += chunk;
+  });
+
+  // The whole response has been received. Print out the result.
+  resp.on('end', () => {
+    // console.log(JSON.parse(data).result);
+    console.log(data);
+  });
+
+  }).on("error", (err) => {
+  console.log("Error: " + err.message);
+});
+}
+
+function sendKnowledge(red, green, blue, yellow, black, white){
+  console.log("sending knowledge");
+  http.get('http://localhost/maps-gps-tracker/updateData.php?red='+red+'&green='+green+'&blue='+blue+'&yellow='+yellow+'&black='+black+'&white='+white, (resp) => {
   let data = '';
 
   // A chunk of data has been received.

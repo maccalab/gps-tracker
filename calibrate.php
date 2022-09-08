@@ -9,5 +9,5 @@ use Firebase\FirebaseLib;
 $firebase = new FirebaseLib(URL, TOKEN);
 
 // send calibrate command
-$firebase->set(PATH . '/Calibrate', 1);
+$firebase->set(PATH . '/Calibrate/state', 1);
 ?>

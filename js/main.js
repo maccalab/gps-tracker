@@ -8,49 +8,24 @@ function maps() {
 	var options=
 	{
 		zoom:14,
-		center:new google.maps.LatLng(-0.884621, 119.897442)
+		center:new google.maps.LatLng(-0.8360786292095773, 119.88949212973405)
 	};
-	peta=new google.maps.Map(document.getElementById("kotak3"), options);
+	peta = new google.maps.Map(document.getElementById("kotak3"), options);
 
-	// $.ajax({
-	// 	url: "http://localhost/maps-gps-tracker/getMarker.php",
-	// 	method: "post",
-	// 	dataType: "json",
-	// 	success: function (data) {
-	// 		mapsLat = data.latitude;
-	// 		mapsLng = data.longitude;
-	// 	  for (var i = 0; i < data.length; i++) {
-	// 		displayLocation(data[i]);
-	// 	  }
-	// 	},
-	//   });
-
-	  setInterval(getMarkerRealTime, 3000);
-}
-
-function displayMap(){
-	var options=
-	{
-		zoom:14,
-		center:new google.maps.LatLng(mapsLat, mapsLng)
-	};
-	peta=new google.maps.Map(document.getElementById("kotak3"), options);
-}
-
-function getMarkerRealTime(){
 	$.ajax({
 		url: "http://localhost/maps-gps-tracker/getMarker.php",
 		method: "post",
 		dataType: "json",
 		success: function (data) {
-			mapsLat = data[0].latitude;
-			mapsLng = data[0].longitude;
-			displayMap();
+			mapsLat = data.latitude;
+			mapsLng = data.longitude;
 		  for (var i = 0; i < data.length; i++) {
 			displayLocation(data[i]);
 		  }
 		},
 	  });
+
+	//   setInterval(getMarkerRealTime, 3000);
 }
 
 function displayLocation(location) {
@@ -76,8 +51,8 @@ function displayLocation(location) {
 	  });
 	} else {
 		position = new google.maps.LatLng(parseFloat(location.latitude), parseFloat(location.longitude));
-		marker = [];
-		marker = new google.maps.Marker({
+		// marker = [];
+		var marker = new google.maps.Marker({
 			map: peta,
 			position: position,
 			title: location.name,
@@ -87,6 +62,44 @@ function displayLocation(location) {
 			infowindow.open(peta, marker);
 		});
 		}
+}
+
+function displayMap(zoom = 14){
+	var options=
+	{
+		zoom:zoom,
+		center:new google.maps.LatLng(mapsLat, mapsLng)
+	};
+	peta=new google.maps.Map(document.getElementById("kotak3"), options);
+
+	$.ajax({
+		url: "http://localhost/maps-gps-tracker/getMarker.php",
+		method: "post",
+		dataType: "json",
+		success: function (data) {
+			mapsLat = data.latitude;
+			mapsLng = data.longitude;
+		  for (var i = 0; i < data.length; i++) {
+			displayLocation(data[i]);
+		  }
+		},
+	  });
+}
+
+function getMarkerRealTime(){
+	$.ajax({
+		url: "http://localhost/maps-gps-tracker/getMarker.php",
+		method: "post",
+		dataType: "json",
+		success: function (data) {
+			mapsLat = data[0].latitude;
+			mapsLng = data[0].longitude;
+			displayMap();
+		  for (var i = 0; i < data.length; i++) {
+			displayLocation(data[i]);
+		  }
+		},
+	  });
 }
 
 function calibrate(){
@@ -102,3 +115,11 @@ function calibrate(){
 		}
 	});
 }
+
+$(".lihat").click(function() {
+	var lat = $(this).data('lat');
+	var lng = $(this).data('lng');
+	mapsLat = lat;
+	mapsLng = lng;
+	displayMap(22);
+  });
