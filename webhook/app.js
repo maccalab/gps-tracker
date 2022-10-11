@@ -4,8 +4,8 @@ const http = require('http');
 var admin = require("firebase-admin");
 
 // Fetch the service account key JSON file contents
-// var serviceAccount = require("C:/xampp/htdocs/maps-gps-tracker/webhook/services-account-file.json");
-var serviceAccount = require("C:/laragon/www/maps-gps-tracker/webhook/services-account-file.json");
+var serviceAccount = require("C:/xampp/htdocs/maps-gps-tracker/webhook/services-account-file.json");
+// var serviceAccount = require("C:/laragon/www/maps-gps-tracker/webhook/services-account-file.json");
 
 // Initialize the app with a service account, granting admin privileges
 admin.initializeApp({
