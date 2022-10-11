@@ -4,7 +4,8 @@ const http = require('http');
 var admin = require("firebase-admin");
 
 // Fetch the service account key JSON file contents
-var serviceAccount = require("C:/xampp/htdocs/maps-gps-tracker/webhook/services-account-file.json");
+// var serviceAccount = require("C:/xampp/htdocs/maps-gps-tracker/webhook/services-account-file.json");
+var serviceAccount = require("C:/laragon/www/maps-gps-tracker/webhook/services-account-file.json");
 
 // Initialize the app with a service account, granting admin privileges
 admin.initializeApp({
@@ -27,6 +28,7 @@ ref.on("value", function(snapshot) {
 colour.on("value", function(snapshot) {
         // console.log(snapshot.val());
         sendColor(snapshot.val().read);
+        triggerGps();
     }, (errorObject) => {
         console.log("The read failed: " + errorObject.name);
         });
@@ -69,6 +71,27 @@ function sendGPS(satelite, latitude, longitude){
 function sendColor(read){
   console.log("sending color");
   http.get('http://localhost/maps-gps-tracker/updateData.php?read='+read, (resp) => {
+  let data = '';
+
+  // A chunk of data has been received.
+  resp.on('data', (chunk) => {
+    data += chunk;
+  });
+
+  // The whole response has been received. Print out the result.
+  resp.on('end', () => {
+    // console.log(JSON.parse(data).result);
+    console.log(data);
+  });
+
+  }).on("error", (err) => {
+  console.log("Error: " + err.message);
+});
+}
+
+function triggerGps(){
+  console.log("trigger gps");
+  http.get('http://localhost/maps-gps-tracker/triggerGps.php', (resp) => {
   let data = '';
 
   // A chunk of data has been received.

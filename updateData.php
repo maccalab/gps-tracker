@@ -1,5 +1,13 @@
 <?php
 include("conn.php");
+require "vendor/autoload.php";
+
+const URL = 'https://ta-hendra-f9f06-default-rtdb.firebaseio.com/';
+const TOKEN = 'baV0cFwJF5aG62RHvG8o64B8pkYKgH1xk9aICxSU';
+const PATH = '/Colour';
+
+use Firebase\FirebaseLib;
+$firebase = new FirebaseLib(URL, TOKEN);
 
 if(isset($_GET['read'])){
   //parsing incoming data
@@ -422,6 +430,8 @@ if(isset($_GET['read'])){
 
     if ($conn->query($sqlInsert) === TRUE) {
         echo "data stored successfully";
+        //send color result to firebase
+        $firebase->set(PATH.'/hasil_online', $result);
       } else {
         echo "Error store data: " . $conn->error;
       }
