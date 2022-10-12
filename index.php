@@ -114,6 +114,8 @@ include 'getData.php';
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
+                  <th>No</th>
+                  <th>ID</th>
                   <th>Warna</th>
                   <th>Jumlah Satelite</th>
                   <th>Latitude</th>
@@ -122,18 +124,24 @@ include 'getData.php';
                 </tr>
                 </thead>
                 <tbody>
+                  <?php $i = count($my_array); ?>
                   <?php foreach($my_array as $data) : ?>
                 <tr>
+                  <td><?= $i; ?></td>
+                  <td><?= $data['id']; ?></td>
                   <td><?= $data['warna']; ?></td>
                   <td><?= $data['jumlah_satelite']; ?></td>
                   <td><?= $data['latitude']; ?></td>
                   <td><?= $data['longitude']; ?></td>
                   <td> <button class="lihat btn btn-sm btn-success" data-lat="<?=$data['latitude'];?>" data-lng="<?=$data['longitude'];?>">Lihat</button> </td>
                 </tr>
+                <?php $i--; ?>
                 <?php endforeach; ?>
                 </tbody>
                 <tfoot>
                 <tr>
+                  <th>No</th>
+                  <th>ID</th>
                   <th>Warna</th>
                   <th>Jumlah Satelite</th>
                   <th>Latitude</th>
@@ -190,6 +198,7 @@ include 'getData.php';
     $("#example1").DataTable({
       "responsive": true,
       "autoWidth": false,
+      order: [[1, 'desc']],
     });
     $('#example2').DataTable({
       "paging": true,
